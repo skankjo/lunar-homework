@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "ava --debug-brk"
+    "test": "eslint src && ava"
   },
   "dependencies": {
     "ava": "^0.20.0",
@@ -25,7 +25,6 @@
     "jsdom": "^11.1.0",
     "path": "^0.12.7",
     "prop-types": "^15.5.10",
-    "ramda": "^0.24.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-form": "^1.2.8",
