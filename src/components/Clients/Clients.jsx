@@ -2,7 +2,7 @@ import IPT from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchCustomers } from '../../actions/clients';
+import fetchCustomers from '../../actions/clients';
 import { deleteCustomer } from '../../actions/client';
 import CustomerList from './CustomerList';
 

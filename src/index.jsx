@@ -13,7 +13,7 @@ import rootReducer from './reducers';
 
 const history = createBrowserHistory();
 
-const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line
 const reduxLoggerMiddleware = createLogger({
   collapsed: true,
   stateTransformer: state => JSON.parse(JSON.stringify(state)),
@@ -34,4 +34,4 @@ ReactDOM.render(
   <Provider store={store}>
     <App history={history} />
   </Provider>,
-  document.getElementById('root'));
+  document.getElementById('root')); // eslint-disable-line no-undef

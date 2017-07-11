@@ -1,20 +1,9 @@
-import _ from 'ramda';
-import { List, Map, fromJS, is } from 'immutable';
+import { List, Map } from 'immutable';
 import config from '../config';
 
 export const ADDRESS_VALIDATION_REJECTED = 'ADDRESS_VALIDATION_REJECTED';
 export const ADDRESS_VALIDATION_FULFILLED = 'ADDRESS_VALIDATION_FULFILLED';
 export const ADDRESS_VALIDATION_PENDING = 'ADDRESS_VALIDATION_PENDING';
-
-function customerToAddress(customer) {
-  const { city, street, housenumber, zip } = customer;
-  return fromJS({
-    city,
-    street,
-    housenumber,
-    zip,
-  });
-}
 
 const addressComponentMapper = {
   locality: 'city',
@@ -64,12 +53,12 @@ function checkResponse(resolve, reject, customer, response) {
 }
 
 export default function validateAddress(customer) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const promise = new Promise((resolve, reject) => {
       const { city, street, housenumber, zip } = customer;
       const address = [city, street, housenumber, zip].reduce((acc, item) => (item ? `${acc}${item},` : acc), '');
 
-      fetch(`${config.geocode.baseUrl}?address=${address}&key=${config.geocode.key}`)
+      fetch(`${config.geocode.baseUrl}?address=${address}&key=${config.geocode.key}`) // eslint-disable-line no-undef
         .then(response => response.json())
         .then(json => checkResponse(resolve, reject, customer, json))
         .catch(err => reject({ errorMessage: err.message }));

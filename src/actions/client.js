@@ -1,11 +1,10 @@
 import formUrlencode from 'form-urlencoded';
-import { push } from 'react-router-redux';
 import config from '../config';
 import validateAddress from './validateAddress';
 import { customerToJson } from '../utils/customerMapper';
 
 function postCustomer(customer, url) {
-  const headers = new Headers();
+  const headers = new Headers(); // eslint-disable-line no-undef
   headers.append('Authorization', `Bearer ${config.stripe.key}`);
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -14,7 +13,7 @@ function postCustomer(customer, url) {
     headers,
     body: formUrlencode(customerToJson(customer)),
   };
-  return fetch(url, options);
+  return fetch(url, options); // eslint-disable-line no-undef
 }
 
 function createCustomer(customer) {
@@ -51,7 +50,7 @@ export function saveCustomer(customer) {
 export function deleteCustomer(id) {
   return (dispatch) => {
     const promise = new Promise((resolve, reject) => {
-      const headers = new Headers();
+      const headers = new Headers(); // eslint-disable-line no-undef
       headers.append('Authorization', `Bearer ${config.stripe.key}`);
 
       const options = {
@@ -59,7 +58,7 @@ export function deleteCustomer(id) {
         headers,
       };
 
-      fetch(`${config.stripe.baseUrl}customers/${id}`, options)
+      fetch(`${config.stripe.baseUrl}customers/${id}`, options) // eslint-disable-line no-undef
         .then(response => response.json())
         .then(json => resolve(json))
         .catch(err => reject(err));
