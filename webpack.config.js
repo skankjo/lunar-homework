@@ -1,7 +1,5 @@
 const path = require('path');
-// const postcssConfig = require('./config/postcss.config');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -21,7 +19,6 @@ module.exports = {
     rules: [
       { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
       { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ },
-      // { test: /\.css$/, include: /src/, use: ['style-loader', { loader: 'css-loader', options: { importLoaders: 1 } }, 'postcss-loader'] },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
@@ -30,7 +27,6 @@ module.exports = {
               loader: 'css-loader',
               options: { importLoaders: 1 },
             },
-            'postcss-loader',
           ],
         }),
       },
@@ -39,11 +35,6 @@ module.exports = {
   plugins: [
     HtmlWebpackPluginConfig,
     new ExtractTextPlugin('[name].bundle.css'),
-    // new webpack.LoaderOptionsPlugin({
-    //   options: {
-    //     postcss: postcssConfig,
-    //   },
-    // }),
   ],
   resolve: {
     extensions: ['.webpack.js', '.js', '.jsx'],

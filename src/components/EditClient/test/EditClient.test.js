@@ -1,26 +1,31 @@
 import test from 'ava';
 import React from 'react';
-import { fromJS, List, Map } from 'immutable';
-import { shallow } from 'enzyme';
+import sinon from 'sinon';
+import { fromJS, Map } from 'immutable';
+import { mount } from 'enzyme';
 import { EditClient } from '../EditClient';
 
 test('should display validation errors', (t) => {
   const match = {
     params: {},
   };
-  const saveCustomer = () => {};
+  const saveCustomer = sinon.spy();
   const clients = fromJS({
     customers: Map(),
   });
   const address = Map();
 
-  const wrapper = shallow(
-    <EditClient match={match} saveCustomer={saveCustomer} clients={clients} address={address} />,
+  const wrapper = mount(
+    <EditClient // eslint-disable-line react/jsx-filename-extension
+      match={match}
+      saveCustomer={saveCustomer}
+      clients={clients}
+      address={address}
+    />,
   );
-
-  const form = wrapper.render();
-  const submit = form.find('button');
+  const submit = wrapper.find('button');
   t.is(submit.length, 1);
-  submit.shallow().simulate('click');
-  t.is(form.find('.-hasError').length, 1);
+  const form = wrapper.find('Form');
+  form.simulate('submit');
+  t.is(wrapper.find('.FormError').length, 7);
 });
