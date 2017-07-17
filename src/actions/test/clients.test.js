@@ -121,6 +121,7 @@ test('delete customer', (t) => { // eslint-disable-line arrow-body-style
       });
   });
 });
+
 test('save customer', (t) => { // eslint-disable-line arrow-body-style
   return new Promise((resolve, reject) => {
     const store = t.context.store;
