@@ -7,10 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "eslint src && ava"
+    "test": "eslint src && ava -v"
   },
   "dependencies": {
-    "ava": "^0.20.0",
     "connected-react-router": "^4.2.1",
     "enzyme": "^2.9.1",
     "es6-promise": "^4.1.1",
@@ -44,6 +43,7 @@
     "webpack-dev-server": "^2.5.0"
   },
   "devDependencies": {
+    "ava": "^0.20.0",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -57,6 +57,7 @@
     "jsdom": "^11.1.0",
     "mock-fetch-api": "^1.0.7",
     "react-addons-test-utils": "^15.6.0",
+    "react-test-renderer": "^15.6.1",
     "redux-mock-store": "^1.2.3",
     "style-loader": "^0.18.2"
   },
