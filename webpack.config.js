@@ -30,6 +30,25 @@ module.exports = {
           ],
         }),
       },
+      {
+        test: /\.(gif|jpg|png)$/,
+        loader: 'url-loader',
+        options: { limit: 10000 },
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-loader',
+      },
+      {
+        test: /favicon\.ico$/,
+        loader: 'url-loader',
+        options: { limit: 1 },
+      },
+      {
+        test: /\.(ttf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
+        loader: 'url-loader',
+        options: { limit: 100000 },
+      },
     ],
   },
   plugins: [
