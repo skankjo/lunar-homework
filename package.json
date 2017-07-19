@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "eslint src && ava -v"
+    "test": "NODE_ENV=test && eslint src && ava -v"
   },
   "dependencies": {
     "connected-react-router": "^4.2.1",

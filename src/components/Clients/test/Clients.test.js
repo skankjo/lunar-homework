@@ -24,7 +24,7 @@ test('Should wait for data', (t) => {
     <Clients getCustomers={t.context.getCustomers} removeCustomer={t.context.removeCustomer} clients={clients} /> // eslint-disable-line
   );
 
-  t.is(wrapper.find('.pending').length, 1);
+  t.true(wrapper.find('Dimmer').prop('active'));
 });
 
 test('Should display customers data', (t) => {
@@ -36,7 +36,7 @@ test('Should display customers data', (t) => {
     <Clients getCustomers={t.context.getCustomers} removeCustomer={t.context.removeCustomer} clients={clients} /> // eslint-disable-line
   );
 
-  t.is(wrapper.find('.pending').length, 0);
+  t.false(wrapper.find('Dimmer').prop('active'));
 });
 
 test('Should call action', (t) => {

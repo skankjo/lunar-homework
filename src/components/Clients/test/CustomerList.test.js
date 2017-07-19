@@ -22,7 +22,4 @@ test('Outputs customer list', (t) => {
 
   t.is(customers.size, 2);
   t.is(wrapper.find('Line').length, 2);
-  const tableHeaders = wrapper.find('th');
-  t.is(tableHeaders.length, 2);
-  t.is(tableHeaders.first().render().text(), 'Name:');
 });
