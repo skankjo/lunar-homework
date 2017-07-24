@@ -48,6 +48,8 @@ function checkResponse(resolve, reject, customer, response) {
     //   });
     // }
     return resolve({ validatedAddress });
+  } else if (response.status === 'ZERO_RESULTS') {
+    reject({ errorMessage: 'No address found' });
   }
   return reject({ errorMessage: response.error_message });
 }

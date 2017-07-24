@@ -20,8 +20,15 @@ export default (state = initialState, action) => {
         .set('savedCustomer', false);
     }
 
+    case 'SAVE_CUSTOMER_PENDING':
+      return state
+        .set('savedCustomer', false)
+        .set('pending', true);
+
     case 'SAVE_CUSTOMER_FULFILLED':
-      return state.set('savedCustomer', true);
+      return state
+        .set('savedCustomer', true)
+        .set('pending', false);
 
     case 'DELETE_CUSTOMER_FULFILLED':
       return state.deleteIn(['customers', action.payload.id])

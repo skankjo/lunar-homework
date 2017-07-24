@@ -5,6 +5,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import 'semantic-ui-css/semantic.min.css';
 import './app.css';
 import EditClient from '../EditClient/EditClient';
+import ClientForm from '../EditClient/ClientForm';
 import Clients from '../Clients/Clients';
 import TopMenu from './Menu';
 
@@ -16,8 +17,8 @@ const App = ({ history }) => (
         <div>
           <Route exact path="/" component={Clients} />
           <Route path="/clients" component={Clients} />
-          <Route exact path="/client" component={EditClient} />
-          <Route path="/client/:id" component={EditClient} />
+          <Route exact path="/client" component={ClientForm} />
+          <Route path="/client/:id" component={ClientForm} />
         </div>
       </div>
     </Router>
