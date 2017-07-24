@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 import 'semantic-ui-css/semantic.min.css';
 import './app.css';
-import EditClient from '../EditClient/EditClient';
 import ClientForm from '../EditClient/ClientForm';
 import Clients from '../Clients/Clients';
 import TopMenu from './Menu';
