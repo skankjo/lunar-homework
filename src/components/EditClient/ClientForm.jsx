@@ -8,6 +8,7 @@ import { Form, Message, Segment } from 'semantic-ui-react';
 import { fromJS } from 'immutable';
 import { withRouter, Redirect } from 'react-router-dom';
 import { saveCustomer } from '../../actions/client';
+import TextField from './TextField';
 import validate from '../../validation';
 
 const convert = (value, key) => ({
@@ -21,7 +22,7 @@ const isNotValid = pipe(prop('errors'), isNotEmpty);
 
 const passesValidation = pipe(filter(isNotValid), isEmpty);
 
-class ClientForm extends Component {
+export class ClientForm extends Component {
   constructor() {
     super();
     this.state = {
@@ -54,12 +55,22 @@ class ClientForm extends Component {
         errors: [],
       },
     };
+
+    this.emptyCustomer = {
+      id: '',
+      fullname: '',
+      email: '',
+      city: '',
+      street: '',
+      housenumber: '',
+      zip: '',
+    };
   }
 
   componentDidMount() {
     const { clients, match: { params: { id } } } = this.props;
     this.setState(
-      this.convertToState(clients.get('customers').get(id, fromJS(this.state)).toJSON()),
+      this.convertToState(clients.get('customers').get(id, fromJS(this.emptyCustomer)).toJSON()),
     );
   }
 
@@ -94,22 +105,27 @@ class ClientForm extends Component {
     this.setState(validate('client', this.state), callback);
   }
 
+  displayErrors(arr) {
+    return arr.join(', ');
+  }
+
   render() {
     const { id, fullname, email, city, street, housenumber, zip } = this.state;
     const { clients, address } = this.props;
+    const width = 4;
 
     return (
-      <Form as={Segment} error={address.get('errorMessage')} success={clients.get('savedCustomer')} loading={clients.get('pending')}>
+      <Form as={Segment} error={!address.get('valid')} success={clients.get('savedCustomer')} loading={clients.get('pending')}>
         <Message success header="Save complete" content="A customer data saved successfully" />
         <Message error header="Error while saving customer data" content={address.get('errorMessage')} />
         <input name="id" type="hidden" value={id.value} />
-        <Form.Input name="fullname" label="Name" value={fullname.value} error={isNotEmpty(fullname.errors)} width={4} required onChange={this.handleChange} />
-        <Form.Input name="email" label="Email" value={email.value} error={isNotEmpty(email.errors)} width={4} required onChange={this.handleChange} />
-        <Form.Input name="city" label="City" value={city.value} error={isNotEmpty(city.errors)} width={4} required onChange={this.handleChange} />
-        <Form.Input name="street" label="Street" value={street.value} error={isNotEmpty(street.errors)} width={4} required onChange={this.handleChange} />
-        <Form.Input name="housenumber" label="House Number" value={housenumber.value} error={isNotEmpty(housenumber.errors)} width={4} required onChange={this.handleChange} />
-        <Form.Input name="zip" label="Zip" value={zip.value} error={isNotEmpty(zip.errors)} width={4} onChange={this.handleChange} />
-        <Form.Button content="Submit" onClick={this.handleSubmit} />
+        <TextField name="fullname" label="Name" value={fullname.value} error={isNotEmpty(fullname.errors)} errorMessage={this.displayErrors(fullname.errors)} width={width} required={true} onChange={this.handleChange} />
+        <TextField name="email" label="Email" value={email.value} error={isNotEmpty(email.errors)} errorMessage={this.displayErrors(email.errors)} width={width} required={true} onChange={this.handleChange} />
+        <TextField name="city" label="City" value={city.value} error={isNotEmpty(city.errors)} errorMessage={this.displayErrors(city.errors)} width={width} required={true} onChange={this.handleChange} />
+        <TextField name="street" label="Street" value={street.value} error={isNotEmpty(street.errors)} errorMessage={this.displayErrors(street.errors)} width={width} required={true} onChange={this.handleChange} />
+        <TextField name="housenumber" label="Housenumber" value={housenumber.value} error={isNotEmpty(housenumber.errors)} errorMessage={this.displayErrors(housenumber.errors)} width={width} required={true} onChange={this.handleChange} />
+        <TextField name="zip" label="Zip" value={zip.value} error={isNotEmpty(zip.errors)} errorMessage={this.displayErrors(zip.errors)} width={width} required={true} onChange={this.handleChange} />
+        <Form.Button id="submit" content="Submit" onClick={this.handleSubmit} />
       </Form>
     );
   }

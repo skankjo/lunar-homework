@@ -3,7 +3,7 @@ import React from 'react';
 import sinon from 'sinon';
 import { fromJS, Map } from 'immutable';
 import { mount } from 'enzyme';
-import { EditClient } from '../EditClient';
+import { ClientForm } from '../ClientForm';
 
 test('should display validation errors', (t) => {
   const match = {
@@ -16,16 +16,15 @@ test('should display validation errors', (t) => {
   const address = Map();
 
   const wrapper = mount(
-    <EditClient // eslint-disable-line react/jsx-filename-extension
+    <ClientForm // eslint-disable-line react/jsx-filename-extension
       match={match}
       saveCustomer={saveCustomer}
       clients={clients}
       address={address}
     />,
   );
-  const submit = wrapper.find('button');
+  const submit = wrapper.find('#submit');
   t.is(submit.length, 1);
-  const form = wrapper.find('Form');
-  form.simulate('submit');
-  t.is(wrapper.find('.FormError').length, 7);
+  submit.simulate('click');
+  t.is(wrapper.find('.error-message').length, 5);
 });

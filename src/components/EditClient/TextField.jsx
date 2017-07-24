@@ -1,17 +1,40 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text } from 'react-form';
+import { Form } from 'semantic-ui-react';
 
-const TextField = ({ name, title }) => (
-  <div className="form-line">
-    <label htmlFor={name}>{title}</label>
-    <Text field={name} />
+const TextField = ({ name, label, value, error, width, required, onChange, errorMessage }) => (
+  <div className="line">
+    <Form.Input
+      name={name}
+      label={label}
+      value={value}
+      error={error}
+      width={width}
+      required={required}
+      onChange={onChange}
+    />
+    {error && <div className="error-message">{errorMessage}</div>}
   </div>
 );
 
 TextField.propTypes = {
   name: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  error: PropTypes.bool,
+  width: PropTypes.number,
+  required: PropTypes.bool,
+  onChange: PropTypes.func,
+  errorMessage: PropTypes.string,
+};
+
+TextField.defaultProps = {
+  value: '',
+  error: false,
+  width: 100,
+  required: false,
+  onChange: () => {},
+  errorMessage: '',
 };
 
 export default TextField;
