@@ -1,5 +1,8 @@
 import config from '../config';
 import { jsonToCustomer } from '../utils/customerMapper';
+import addStateSuffixes from '../utils/addStateSuffixes';
+
+export const actions = addStateSuffixes(['FETCH_CUSTOMERS']);
 
 function mapCustomers(json) {
   return json.data.map(data => jsonToCustomer(data));
@@ -20,7 +23,7 @@ export default function fetchCustomers() {
     });
 
     return dispatch({
-      type: 'FETCH_CUSTOMERS',
+      type: actions.FETCH_CUSTOMERS,
       payload: promise,
     });
   };

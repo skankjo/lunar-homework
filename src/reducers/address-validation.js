@@ -1,5 +1,8 @@
 import { fromJS, Map } from 'immutable';
-import * as actions from '../actions/validateAddress';
+import { __, identity, propOr } from 'ramda';
+import * as validateAddressActions from '../actions/validateAddress';
+
+const actions = validateAddressActions.actions;
 
 const initialState = fromJS({
   pending: false,
@@ -8,18 +11,19 @@ const initialState = fromJS({
   validatedAddress: Map(),
 });
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case actions.ADDRESS_VALIDATION_REJECTED:
-      return state
-        .merge(fromJS({ pending: false, valid: false, ...action.payload }));
+const reducers = {
+  [actions.ADDRESS_VALIDATION_REJECTED]: (state, { payload }) =>
+      state
+        .merge(fromJS({ pending: false, valid: false, ...payload })),
 
-    case actions.ADDRESS_VALIDATION_FULFILLED:
-      return state.merge(fromJS({ pending: false, valid: true, ...action.payload }));
+  [actions.ADDRESS_VALIDATION_FULFILLED]: (state, { payload }) =>
+      state.merge(fromJS({ pending: false, valid: true, ...payload })),
 
-    case actions.ADDRESS_VALIDATION_PENDING:
-      return state
-        .merge(fromJS({ pending: true, valid: true, errorMessage: '', validatedAddress: Map() }));
-    default: return state;
-  }
+  [actions.ADDRESS_VALIDATION_PENDING]: state =>
+      state
+        .merge(fromJS({ pending: true, valid: true, errorMessage: '', validatedAddress: Map() })),
 };
+
+const getReducer = propOr(identity, __, reducers);
+
+export default (state = initialState, action) => getReducer(action.type)(state, action);

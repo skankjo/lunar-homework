@@ -1,9 +1,8 @@
 import { List, Map } from 'immutable';
 import config from '../config';
+import addStateSuffixes from '../utils/addStateSuffixes';
 
-export const ADDRESS_VALIDATION_REJECTED = 'ADDRESS_VALIDATION_REJECTED';
-export const ADDRESS_VALIDATION_FULFILLED = 'ADDRESS_VALIDATION_FULFILLED';
-export const ADDRESS_VALIDATION_PENDING = 'ADDRESS_VALIDATION_PENDING';
+export const actions = addStateSuffixes(['ADDRESS_VALIDATION']);
 
 const addressComponentMapper = {
   locality: 'city',
@@ -66,7 +65,7 @@ export default function validateAddress(customer) {
         .catch(err => reject({ errorMessage: err.message }));
     });
     return dispatch({
-      type: 'ADDRESS_VALIDATION',
+      type: actions.ADDRESS_VALIDATION,
       payload: promise,
     });
   };

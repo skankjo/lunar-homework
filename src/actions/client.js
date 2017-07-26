@@ -2,6 +2,9 @@ import formUrlencode from 'form-urlencoded';
 import config from '../config';
 import validateAddress from './validateAddress';
 import { customerToJson } from '../utils/customerMapper';
+import addStateSuffixes from '../utils/addStateSuffixes';
+
+export const actions = addStateSuffixes(['SAVE_CUSTOMER', 'DELETE_CUSTOMER']);
 
 function postCustomer(customer, url) {
   const headers = new Headers(); // eslint-disable-line no-undef
@@ -41,7 +44,7 @@ export function saveCustomer(customer) {
     });
 
     return dispatch({
-      type: 'SAVE_CUSTOMER',
+      type: actions.SAVE_CUSTOMER,
       payload: promise,
     });
   };
@@ -65,7 +68,7 @@ export function deleteCustomer(id) {
     });
 
     return dispatch({
-      type: 'DELETE_CUSTOMER',
+      type: actions.DELETE_CUSTOMER,
       payload: promise,
     });
   };
