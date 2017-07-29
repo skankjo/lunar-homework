@@ -1,4 +1,5 @@
 import formUrlencode from 'form-urlencoded';
+import { complement, either, ifElse, isEmpty, isNil, pipe, prop } from 'ramda';
 import config from '../config';
 import validateAddress from './validateAddress';
 import { customerToJson } from '../utils/customerMapper';
@@ -27,16 +28,18 @@ function updateCustomer(customer) {
   return postCustomer(customer, `${config.stripe.baseUrl}customers/${customer.id}`);
 }
 
+const isNilOrEmpty = either(isNil, isEmpty);
+const isNeitherNilNorEmpty = complement(isNilOrEmpty);
+const hasId = pipe(prop('id'), isNeitherNilNorEmpty);
+const save = ifElse(hasId, updateCustomer, createCustomer);
+
 export function saveCustomer(customer) {
   return (dispatch, getState) => {
     const promise = new Promise((resolve, reject) => {
       dispatch(validateAddress(customer)).then(() => {
         const validatedAddress = getState().address.get('validatedAddress');
         const validCustomer = { ...customer, ...validatedAddress.toJS() };
-        if (!validCustomer.id) {
-          return createCustomer(validCustomer);
-        }
-        return updateCustomer(validCustomer);
+        return save(validCustomer);
       })
       .then(response => response.json())
       .then(json => resolve(json))
