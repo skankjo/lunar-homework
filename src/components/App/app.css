@@ -6,3 +6,7 @@
 .line {
   margin-bottom: 1em;
 }
+
+a.button {
+  cursor: pointer;
+}

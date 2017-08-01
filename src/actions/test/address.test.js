@@ -5,7 +5,7 @@ import { Map, fromJS } from 'immutable';
 import promiseMiddleware from 'redux-promise-middleware';
 import sinon from 'sinon';
 import thunkMiddleware from 'redux-thunk';
-import validateAddress from '../validateAddress';
+import { validateAddress } from '../validateAddress';
 import { responseOK } from './utils';
 
 test.before(() => {
@@ -40,7 +40,7 @@ test.afterEach(() => {
   global.fetch.reset();
 });
 
-test('error response from geocode', (t) => { // eslint-disable-line arrow-body-style
+test('should return error_message if it is available', (t) => { // eslint-disable-line arrow-body-style
   return new Promise((resolve) => {
     const store = t.context.store;
     const customer = t.context.customer;
@@ -52,33 +52,30 @@ test('error response from geocode', (t) => { // eslint-disable-line arrow-body-s
 
     store.dispatch(validateAddress(customer))
       .catch((err) => {
-        t.is(err.errorMessage, 'Error occurred');
-        resolve(err.errorMessage);
+        t.is(err, 'Error occurred');
+        resolve(err);
       });
   });
 });
 
-test('too little data to find matching address', (t) => { // eslint-disable-line arrow-body-style
+test('should return status if no error_message available', (t) => { // eslint-disable-line arrow-body-style
   return new Promise((resolve) => {
     const store = t.context.store;
     const customer = t.context.customer;
 
     global.fetch.returns(responseOK({
-      status: 'OK',
-      results: [{
-        address_components: [],
-      }],
+      status: 'EMPTY_RESULT',
     }));
 
     store.dispatch(validateAddress(customer))
       .catch((err) => {
-        t.is(err.errorMessage, 'Not enough data to find exact address');
-        resolve(err.errorMessage);
+        t.is(err, 'EMPTY_RESULT');
+        resolve(err);
       });
   });
 });
 
-test('too many variants of address', (t) => { // eslint-disable-line arrow-body-style
+test('should return two converted addresses', (t) => { // eslint-disable-line arrow-body-style
   return new Promise((resolve) => {
     const store = t.context.store;
     const customer = t.context.customer;
@@ -105,10 +102,26 @@ test('too many variants of address', (t) => { // eslint-disable-line arrow-body-
       ],
     }));
 
+    const expectedAction = {
+      type: 'ADDRESS_VALIDATION_FULFILLED',
+      payload: [{
+        city: 'Vilnius',
+        street: 'Kauno g.',
+        housenumber: '1',
+        zip: '23311',
+      },
+      {
+        city: 'Utena',
+        street: 'Vilniaus g.',
+        housenumber: '13',
+        zip: '09878',
+      }],
+    };
+
     store.dispatch(validateAddress(customer))
-      .catch((err) => {
-        t.is(err.errorMessage, 'Too many variants of address by provided data of yours. Please, specify your address more precisely');
-        resolve(err.errorMessage);
+      .then((response) => {
+        t.deepEqual(response.action, expectedAction);
+        resolve(response);
       });
   });
 });

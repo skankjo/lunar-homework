@@ -2,7 +2,7 @@ import test from 'ava';
 import React from 'react';
 import sinon from 'sinon';
 // import util from 'util';
-import { fromJS, Map } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 import { mount } from 'enzyme';
 import { ClientForm } from '../ClientForm';
 
@@ -15,7 +15,9 @@ test('should display validation errors', (t) => {
     customers: Map(),
     pending: false,
   });
-  const address = Map();
+  const address = fromJS({
+    addresses: List(),
+  });
 
   const wrapper = mount(
     <ClientForm // eslint-disable-line react/jsx-filename-extension
@@ -47,6 +49,9 @@ test('should save customer on successful validation of the form', (t) => {
     },
   };
   const saveCustomer = sinon.spy();
+  const resetAddressValidation = sinon.spy();
+  const validateAddress = sinon.spy();
+
   const clients = fromJS({
     customers: fromJS({
       aaa: {
@@ -61,7 +66,9 @@ test('should save customer on successful validation of the form', (t) => {
     savedCustomer: true,
     pending: false,
   });
-  const address = Map();
+  const address = fromJS({
+    addresses: List([{ formatted_address: 'aaa' }]),
+  });
 
   const wrapper = mount(
     <ClientForm // eslint-disable-line react/jsx-filename-extension
@@ -69,6 +76,8 @@ test('should save customer on successful validation of the form', (t) => {
       saveCustomer={saveCustomer}
       clients={clients}
       address={address}
+      resetAddressValidation={resetAddressValidation}
+      validateAddress={validateAddress}
     />,
   );
 
@@ -107,6 +116,7 @@ test('should display an error while saving customer data', (t) => {
   const address = fromJS({
     valid: false,
     errorMessage: 'Error message',
+    addresses: List(),
   });
 
   const wrapper = mount(

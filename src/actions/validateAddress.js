@@ -1,43 +1,32 @@
-import { fromJS } from 'immutable';
+import Either from 'data.either';
+import { curry, map, merge, pick, pipe, prop, propOr } from 'ramda';
 import config from '../config';
 import addStateSuffixes from '../utils/addStateSuffixes';
 import mapAddress from '../utils/mapAddress';
 
-export const actions = addStateSuffixes(['ADDRESS_VALIDATION']);
+export const actions = addStateSuffixes(['ADDRESS_VALIDATION', 'ADDRESS_VALIDATION_RESET']);
+
+const processResponse = response => (response.status === 'OK' ?
+                                    Either.of(response.results) :
+                                    Either.Left(propOr(response.status, 'error_message', response)));
+
+const mergeProcessedFn = (fn1, fn2, o) => merge(fn1(o), fn2(o));
+const mergeProcessed = curry(mergeProcessedFn);
+const getFormattedAddressEntry = pick(['formatted_address']);
+const mapAddressComponents = pipe(prop('address_components'), mapAddress);
+const convert = map(mergeProcessed(mapAddressComponents, getFormattedAddressEntry));
+const buildAddresses = map(convert);
 
 function checkResponse(resolve, reject, customer, response) {
-  if (response.status === 'OK') {
-    if (response.results.length > 1) {
-      return reject({ errorMessage: 'Too many variants of address by provided data of yours. Please, specify your address more precisely' });
-    }
-    const address = mapAddress(response.results.shift().address_components);
-    const validatedAddress = fromJS(address);
-    if (validatedAddress.size < 4) {
-      reject({
-        errorMessage: 'Not enough data to find exact address',
-      });
-    }
-    // TODO: ask a client if he confirms this address
-    // const submittedAddress = customerToAddress(customer);
-    // if (!is(validatedAddress, submittedAddress)) {
-    //   reject({
-    //     errorMessage: 'The address you specified
-    // does not match the address found by your description.',
-    //     validatedAddress,
-    //   });
-    // }
-    return resolve({ validatedAddress });
-  } else if (response.status === 'ZERO_RESULTS') {
-    reject({ errorMessage: 'No address found' });
-  }
-  return reject({ errorMessage: response.error_message });
+  const addresses = pipe(processResponse, buildAddresses)(response);
+  addresses.chain(resolve).orElse(reject);
 }
 
-export default function validateAddress(customer) {
+export function validateAddress(customer) {
   return (dispatch) => {
     const promise = new Promise((resolve, reject) => {
       const { city, street, housenumber, zip } = customer;
-      const address = [city, street, housenumber, zip].reduce((acc, item) => (item ? `${acc}${item},` : acc), '');
+      const address = [city, street, housenumber, zip].join(',');
 
       fetch(`${config.geocode.baseUrl}?address=${address}&key=${config.geocode.key}`) // eslint-disable-line no-undef
         .then(response => response.json())
@@ -49,4 +38,11 @@ export default function validateAddress(customer) {
       payload: promise,
     });
   };
+}
+
+export function resetAddressValidation() {
+  return dispatch =>
+    dispatch({
+      type: actions.ADDRESS_VALIDATION_RESET,
+    });
 }

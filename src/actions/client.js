@@ -1,7 +1,6 @@
 import formUrlencode from 'form-urlencoded';
 import { complement, either, ifElse, isEmpty, isNil, pipe, prop } from 'ramda';
 import config from '../config';
-import validateAddress from './validateAddress';
 import { customerToJson } from '../utils/customerMapper';
 import addStateSuffixes from '../utils/addStateSuffixes';
 
@@ -34,16 +33,12 @@ const hasId = pipe(prop('id'), isNeitherNilNorEmpty);
 const save = ifElse(hasId, updateCustomer, createCustomer);
 
 export function saveCustomer(customer) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const promise = new Promise((resolve, reject) => {
-      dispatch(validateAddress(customer)).then(() => {
-        const validatedAddress = getState().address.get('validatedAddress');
-        const validCustomer = { ...customer, ...validatedAddress.toJS() };
-        return save(validCustomer);
-      })
-      .then(response => response.json())
-      .then(json => resolve(json))
-      .catch(err => reject(err));
+      save(customer)
+        .then(response => response.json())
+        .then(json => resolve(json))
+        .catch(err => reject(err));
     });
 
     return dispatch({

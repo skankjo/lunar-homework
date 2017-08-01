@@ -128,21 +128,7 @@ test('save customer', (t) => { // eslint-disable-line arrow-body-style
 
     const expectedActions = [
       {
-        type: 'ADDRESS_VALIDATION_PENDING',
-      },
-      {
         type: 'SAVE_CUSTOMER_PENDING',
-      },
-      {
-        type: 'ADDRESS_VALIDATION_FULFILLED',
-        payload: {
-          validatedAddress: fromJS({
-            city: 'Vilnius',
-            street: 'Kauno g.',
-            housenumber: '1',
-            zip: '23311',
-          }),
-        },
       },
       {
         type: 'SAVE_CUSTOMER_FULFILLED',
@@ -169,7 +155,7 @@ test('save customer', (t) => { // eslint-disable-line arrow-body-style
     };
 
     const { city, street, housenumber, zip } = customer;
-    const address = [city, street, housenumber, zip].reduce((acc, item) => (item ? `${acc}${item},` : acc), '');
+    const address = [city, street, housenumber, zip].join(',');
 
     global.fetch.withArgs(`${config.geocode.baseUrl}?address=${address}&key=${config.geocode.key}`).returns(responseOK({
       status: 'OK',
